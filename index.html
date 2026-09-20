@@ -1,653 +1,304 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>藏经阁 - 校园二手教材&笔记共享平台</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Microsoft YaHei", "SimSun", serif;
-        }
-        body {
-            background: #fdf6e9;
-            color: #3a2e22;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        /* 头部 */
-        header {
-            text-align: center;
-            padding: 30px 0;
-            border-bottom: 2px solid #d2b48c;
-            margin-bottom: 20px;
-        }
-        header h1 {
-            font-size: 48px;
-            color: #8b4513;
-            letter-spacing: 10px;
-            margin-bottom: 10px;
-        }
-        header p {
-            font-size: 18px;
-            color: #6d4c2b;
-            letter-spacing: 2px;
-        }
-        /* 导航栏 */
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        .nav-btn {
-            background: #fffaf0;
-            border: 2px solid #d2b48c;
-            color: #8b4513;
-            padding: 10px 25px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .nav-btn:hover, .nav-btn.active {
-            background: #8b5a2b;
-            color: white;
-            border-color: #8b5a2b;
-        }
-        /* 搜索栏 */
-        .search-box {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        .search-box input {
-            width: 300px;
-            padding: 12px 15px;
-            border: 2px solid #d2b48c;
-            border-radius: 8px;
-            background: #fffaf0;
-            color: #3a2e22;
-            font-size: 14px;
-        }
-        .search-box select, .search-box button {
-            padding: 12px 15px;
-            border: 2px solid #d2b48c;
-            border-radius: 8px;
-            background: #fffaf0;
-            color: #3a2e22;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .search-box button {
-            background: #8b5a2b;
-            color: white;
-            border-color: #8b5a2b;
-        }
-        .search-box button:hover {
-            background: #6d4425;
-        }
-        /* 内容区 */
-        .content {
-            display: none;
-            margin: 30px 0;
-        }
-        .content.active {
-            display: block;
-        }
-        /* 卡片样式 */
-        .card-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-        .card {
-            background: #fffaf0;
-            border: 2px solid #d2b48c;
-            border-radius: 12px;
-            padding: 20px;
-            transition: 0.3s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(139, 90, 43, 0.2);
-        }
-        .card .title {
-            font-size: 18px;
-            color: #8b4513;
-            font-weight: bold;
-            margin-bottom: 10px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .card .info {
-            font-size: 14px;
-            color: #6d4c2b;
-            margin: 5px 0;
-        }
-        .card .price {
-            font-size: 20px;
-            color: #e63946;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        .card .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .card-btn {
-            flex: 1;
-            padding: 8px 0;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .btn-collect {
-            background: #fffaf0;
-            border: 1px solid #d2b48c;
-            color: #8b4513;
-        }
-        .btn-want {
-            background: #8b5a2b;
-            color: white;
-        }
-        /* 发布/求书表单 */
-        .form-box {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #fffaf0;
-            border: 2px solid #d2b48c;
-            border-radius: 12px;
-            padding: 30px;
-        }
-        .form-box h3 {
-            color: #8b4513;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 20px;
-        }
-        .form-item {
-            margin: 15px 0;
-        }
-        .form-item label {
-            display: block;
-            font-size: 14px;
-            color: #6d4c2b;
-            margin-bottom: 5px;
-        }
-        .form-item input, .form-item select, .form-item textarea {
-            width: 100%;
-            padding: 10px 15px;
-            border: 2px solid #d2b48c;
-            border-radius: 8px;
-            background: #fffdf5;
-            color: #3a2e22;
-            font-family: "Microsoft YaHei";
-        }
-        .form-item textarea {
-            min-height: 100px;
-            resize: none;
-        }
-        .submit-btn {
-            width: 100%;
-            padding: 12px 0;
-            background: #8b5a2b;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .submit-btn:hover {
-            background: #6d4425;
-        }
-        /* 学霸推荐/求书墙 */
-        .hot-area {
-            border: 2px solid #8b4513;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            background: #fff5e1;
-        }
-        .hot-area h3 {
-            color: #8b4513;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .hot-area h3 i {
-            font-style: normal;
-            font-size: 20px;
-        }
-        /* 个人中心 */
-        .user-info {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 16px;
-            color: #6d4c2b;
-        }
-        .user-info input {
-            padding: 8px 15px;
-            border: 2px solid #d2b48c;
-            border-radius: 8px;
-            background: #fffaf0;
-            margin: 0 5px;
-        }
-        .user-info button {
-            padding: 8px 15px;
-            background: #8b5a2b;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>V我50，看看实力</title>
+<style>
+  :root {
+    --green: #07c160;
+    --green-deep: #06ad56;
+    --ink: #1a1a1a;
+    --muted: #7a7a7a;
+    --card: #ffffff;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    padding: 28px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(1100px 620px at 50% -12%, #12d46c 0%, #07c160 42%, #06b055 62%, #eef2f0 62.2%, #e9efec 100%);
+    background-attachment: fixed;
+    min-height: 100%;
+  }
+
+  /* ---------- 标题 ---------- */
+  .headline {
+    text-align: center;
+    animation: pop .6s cubic-bezier(.2, .9, .3, 1.3) both;
+  }
+
+  .headline h1 {
+    margin: 0;
+    font-size: clamp(34px, 10vw, 62px);
+    line-height: 1.15;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #fff;
+    text-shadow: 0 4px 0 rgba(0, 80, 35, .18), 0 14px 34px rgba(0, 0, 0, .18);
+  }
+
+  .headline h1 .v {
+    background: linear-gradient(180deg, #fff6b0 0%, #ffd23f 55%, #ff9f1a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(120, 60, 0, .25);
+    padding: 0 .06em;
+  }
+
+  .headline h1 .shine {
+    background: linear-gradient(100deg, #ffd23f 30%, #fffbe6 45%, #ffd23f 60%);
+    background-size: 260% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(120, 60, 0, .25);
+    animation: shine 2.6s linear infinite;
+  }
+
+  .headline p {
+    margin: 12px 0 0;
+    font-size: clamp(14px, 3.6vw, 17px);
+    color: rgba(255, 255, 255, .92);
+    letter-spacing: 3px;
+    font-weight: 500;
+  }
+
+  /* ---------- 收款卡片 ---------- */
+  .card {
+    width: min(420px, 100%);
+    background: var(--card);
+    border-radius: 26px;
+    padding: 30px 26px 26px;
+    text-align: center;
+    box-shadow:
+      0 2px 0 rgba(255, 255, 255, .7) inset,
+      0 26px 60px rgba(4, 60, 30, .22),
+      0 4px 14px rgba(0, 0, 0, .08);
+    animation: rise .7s .1s cubic-bezier(.2, .9, .3, 1.15) both;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 15px;
+    border-radius: 999px;
+    background: #eaf9f0;
+    color: var(--green-deep);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .5px;
+  }
+
+  .badge::before {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 4px rgba(7, 193, 96, .18);
+    animation: blink 1.4s ease-in-out infinite;
+  }
+
+  .qr-wrap {
+    margin: 20px auto 6px;
+    width: min(300px, 78vw);
+    aspect-ratio: 1 / 1;
+    padding: 10px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid #eef0ef;
+    position: relative;
+  }
+
+  .qr-wrap img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    border-radius: 12px;
+  }
+
+  /* 扫描线 */
+  .qr-wrap::after {
+    content: "";
+    position: absolute;
+    left: 12px; right: 12px;
+    height: 3px;
+    top: 12px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: .85;
+    animation: scan 2.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .card .name {
+    margin: 14px 0 2px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+
+  .card .tip {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ---------- 按钮 ---------- */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    width: min(420px, 100%);
+    animation: rise .7s .2s cubic-bezier(.2, .9, .3, 1.15) both;
+  }
+
+  .btn {
+    flex: 1 1 160px;
+    border: 0;
+    cursor: pointer;
+    padding: 15px 22px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    font-family: inherit;
+    transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+  }
+
+  .btn-primary {
+    color: #fff;
+    background: linear-gradient(180deg, #10d06a, var(--green-deep));
+    box-shadow: 0 10px 24px rgba(6, 173, 86, .38);
+  }
+
+  .btn-ghost {
+    color: var(--green-deep);
+    background: #fff;
+    box-shadow: 0 10px 24px rgba(4, 60, 30, .16);
+  }
+
+  .btn:hover { transform: translateY(-2px); filter: brightness(1.03); }
+  .btn:active { transform: translateY(1px) scale(.985); }
+
+  .footer {
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, .9);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, .18);
+    letter-spacing: .5px;
+    animation: rise .7s .3s cubic-bezier(.2, .9, .3, 1.15) both;
+  }
+
+  /* ---------- 吐司 ---------- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 34px;
+    transform: translate(-50%, 24px);
+    background: rgba(20, 20, 20, .9);
+    color: #fff;
+    font-size: 14.5px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+    backdrop-filter: blur(6px);
+    max-width: 82vw;
+    text-align: center;
+  }
+
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @keyframes pop { from { opacity: 0; transform: scale(.86); } to { opacity: 1; transform: scale(1); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes shine { from { background-position: 200% 0; } to { background-position: -60% 0; } }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+  @keyframes scan { 0% { top: 12px; } 50% { top: calc(100% - 15px); } 100% { top: 12px; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+
+  @media (max-width: 380px) {
+    .card { padding: 24px 18px 20px; border-radius: 20px; }
+    .btn { flex: 1 1 100%; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- 头部 -->
-        <header>
-            <h1>藏 经 阁</h1>
-            <p>校园二手教材 · 优质笔记共享 · 知识传承 · 绿色校园</p>
-        </header>
 
-        <!-- 导航栏 -->
-        <div class="nav">
-            <button class="nav-btn active" onclick="openTab('index')">首页</button>
-            <button class="nav-btn" onclick="openTab('book')">二手教材</button>
-            <button class="nav-btn" onclick="openTab('note')">学霸笔记</button>
-            <button class="nav-btn" onclick="openTab('publish')">发布内容</button>
-            <button class="nav-btn" onclick="openTab('want')">求书墙</button>
-            <button class="nav-btn" onclick="openTab('my')">个人中心</button>
-        </div>
+  <header class="headline">
+    <h1><span class="v">V</span>我<span class="shine">50</span>，看看实力</h1>
+    <p>扫码即到 · 童叟无欺</p>
+  </header>
 
-        <!-- 搜索栏 -->
-        <div class="search-box">
-            <input type="text" id="search-input" placeholder="搜索教材/笔记名称/课程">
-            <select id="search-type">
-                <option value="all">全部</option>
-                <option value="book">二手教材</option>
-                <option value="note">学霸笔记</option>
-            </select>
-            <select id="search-price">
-                <option value="all">价格不限</option>
-                <option value="free">免费</option>
-                <option value="low">0-50元</option>
-                <option value="high">50元以上</option>
-            </select>
-            <button onclick="searchContent()">搜索</button>
-        </div>
+  <main class="card">
+    <span class="badge">微信收款码</span>
 
-        <!-- 首页 -->
-        <div class="content active" id="index">
-            <!-- 学霸推荐 -->
-            <div class="hot-area">
-                <h3><i>🏆</i>学霸推荐（置顶）</h3>
-                <div class="card-list" id="hot-list">
-                    <!-- 自动加载推荐内容 -->
-                </div>
-            </div>
-            <!-- 最新发布 -->
-            <h3 style="color: #8b5a2b; margin: 20px 0;">最新发布</h3>
-            <div class="card-list" id="index-list">
-                <!-- 自动加载最新内容 -->
-            </div>
-        </div>
-
-        <!-- 二手教材 -->
-        <div class="content" id="book">
-            <div class="card-list" id="book-list">
-                <!-- 自动加载教材内容 -->
-            </div>
-        </div>
-
-        <!-- 学霸笔记 -->
-        <div class="content" id="note">
-            <div class="card-list" id="note-list">
-                <!-- 自动加载笔记内容 -->
-            </div>
-        </div>
-
-        <!-- 发布内容 -->
-        <div class="content" id="publish">
-            <div class="form-box">
-                <h3>发布二手教材/学霸笔记</h3>
-                <div class="form-item">
-                    <label>发布类型</label>
-                    <select id="publish-type">
-                        <option value="book">二手教材</option>
-                        <option value="note">学霸笔记</option>
-                    </select>
-                </div>
-                <div class="form-item">
-                    <label>标题（教材名/笔记课程名）</label>
-                    <input type="text" id="publish-title" placeholder="例：数据结构教材/高数上册学霸笔记">
-                </div>
-                <div class="form-item">
-                    <label>详细信息</label>
-                    <textarea id="publish-info" placeholder="例：教材-九成新/无笔迹/适用计科专业；笔记-手写扫描/含课后习题答案"></textarea>
-                </div>
-                <div class="form-item">
-                    <label>价格（免费填0）</label>
-                    <input type="number" id="publish-price" placeholder="0" min="0">
-                </div>
-                <div class="form-item">
-                    <label>交易/获取方式</label>
-                    <select id="publish-way">
-                        <option value="self">校内自提</option>
-                        <option value="express">快递到付</option>
-                        <option value="online">线上发送（仅笔记）</option>
-                    </select>
-                </div>
-                <div class="form-item">
-                    <label>发布人（学号/昵称）</label>
-                    <input type="text" id="publish-user" placeholder="例：2023001/小李">
-                </div>
-                <button class="submit-btn" onclick="publishContent()">确认发布</button>
-            </div>
-        </div>
-
-        <!-- 求书墙 -->
-        <div class="content" id="want">
-            <div class="form-box">
-                <h3>发布求书/求笔记需求</h3>
-                <div class="form-item">
-                    <label>需求类型</label>
-                    <select id="want-type">
-                        <option value="book">求教材</option>
-                        <option value="note">求笔记</option>
-                    </select>
-                </div>
-                <div class="form-item">
-                    <label>需求名称</label>
-                    <input type="text" id="want-title" placeholder="例：求数据结构二手教材/求大物实验笔记">
-                </div>
-                <div class="form-item">
-                    <label>补充说明</label>
-                    <textarea id="want-info" placeholder="例：接受八成新以上/可有偿/计科专业"></textarea>
-                </div>
-                <div class="form-item">
-                    <label>联系人</label>
-                    <input type="text" id="want-user" placeholder="例：2023001/小李">
-                </div>
-                <button class="submit-btn" onclick="publishWant()">发布需求</button>
-            </div>
-            <!-- 求书列表 -->
-            <div class="hot-area" style="margin-top: 30px;">
-                <h3><i>📢</i>最新求书需求</h3>
-                <div class="card-list" id="want-list">
-                    <!-- 自动加载求书内容 -->
-                </div>
-            </div>
-        </div>
-
-        <!-- 个人中心 -->
-        <div class="content" id="my">
-            <div class="user-info">
-                <span>我的校园身份：</span>
-                <input type="text" id="user-name" placeholder="输入学号/昵称" value="藏经阁用户">
-                <button onclick="saveUser()">保存身份</button>
-            </div>
-            <h3 style="color: #8b5a2b; margin: 20px 0;">我的发布</h3>
-            <div class="card-list" id="my-publish">
-                <!-- 自动加载我的发布 -->
-            </div>
-            <h3 style="color: #8b5a2b; margin: 30px 0 20px 0;">我的收藏</h3>
-            <div class="card-list" id="my-collect">
-                <!-- 自动加载我的收藏 -->
-            </div>
-        </div>
+    <div class="qr-wrap">
+      <img src="wechat-pay.png" alt="微信收款二维码 — Kira(**伦)" />
     </div>
 
-    <script>
-        // 全局变量
-        let userInfo = JSON.parse(localStorage.getItem('cangjingge_user')) || { name: '藏经阁用户' };
-        let contentList = JSON.parse(localStorage.getItem('cangjingge_content')) || [];
-        let wantList = JSON.parse(localStorage.getItem('cangjingge_want')) || [];
-        let collectList = JSON.parse(localStorage.getItem('cangjingge_collect')) || [];
+    <p class="name">Kira(**伦)</p>
+    <p class="tip">打开微信 → 扫一扫 → 输入金额 50<br />付款后截图，实力自证</p>
+  </main>
 
-        // 页面切换
-        function openTab(tabId) {
-            document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
-            // 每次切换重新渲染数据
-            renderAll();
-        }
+  <div class="actions">
+    <button class="btn btn-primary" id="payBtn">我要 V 50</button>
+    <button class="btn btn-ghost" id="copyBtn">复制收款人</button>
+  </div>
 
-        // 保存用户身份
-        function saveUser() {
-            let name = document.getElementById('user-name').value;
-            if (!name) {
-                alert('请填写身份信息！');
-                return;
-            }
-            userInfo.name = name;
-            localStorage.setItem('cangjingge_user', JSON.stringify(userInfo));
-            alert('身份保存成功！');
-            renderAll();
-        }
+  <p class="footer">本页面仅供娱乐 · 请勿当真</p>
 
-        // 发布内容（教材/笔记）
-        function publishContent() {
-            let type = document.getElementById('publish-type').value;
-            let title = document.getElementById('publish-title').value;
-            let info = document.getElementById('publish-info').value;
-            let price = document.getElementById('publish-price').value;
-            let way = document.getElementById('publish-way').value;
-            let user = document.getElementById('publish-user').value;
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-            if (!title || !info || !price || !user) {
-                alert('请填写完整发布信息！');
-                return;
-            }
+<script>
+  const toastEl = document.getElementById('toast');
+  let toastTimer;
 
-            // 处理方式文字
-            let wayText = way === 'self' ? '校内自提' : way === 'express' ? '快递到付' : '线上发送';
-            // 处理类型文字
-            let typeText = type === 'book' ? '二手教材' : '学霸笔记';
-            // 新增内容
-            let newContent = {
-                id: Date.now(),
-                type,
-                typeText,
-                title,
-                info,
-                price: Number(price),
-                priceText: Number(price) === 0 ? '免费' : `¥${price}`,
-                way,
-                wayText,
-                user,
-                time: new Date().toLocaleString(),
-                isHot: type === 'note' && Number(price) === 0 // 免费笔记设为学霸推荐
-            };
-            contentList.unshift(newContent);
-            localStorage.setItem('cangjingge_content', JSON.stringify(contentList));
-            alert('发布成功！');
-            // 清空表单
-            document.getElementById('publish-title').value = '';
-            document.getElementById('publish-info').value = '';
-            document.getElementById('publish-price').value = 0;
-            document.getElementById('publish-user').value = userInfo.name;
-            renderAll();
-        }
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+  }
 
-        // 发布求书需求
-        function publishWant() {
-            let type = document.getElementById('want-type').value;
-            let title = document.getElementById('want-title').value;
-            let info = document.getElementById('want-info').value;
-            let user = document.getElementById('want-user').value;
+  document.getElementById('payBtn').addEventListener('click', async () => {
+    const img = document.querySelector('.qr-wrap img');
+    img.animate(
+      [{ transform: 'scale(1)' }, { transform: 'scale(1.045)' }, { transform: 'scale(1)' }],
+      { duration: 520, easing: 'ease-out' }
+    );
+    toast('长按/右键二维码保存，或直接微信扫一扫 ✅');
+  });
 
-            if (!title || !info || !user) {
-                alert('请填写完整需求信息！');
-                return;
-            }
-
-            let typeText = type === 'book' ? '求教材' : '求笔记';
-            let newWant = {
-                id: Date.now(),
-                type,
-                typeText,
-                title,
-                info,
-                user,
-                time: new Date().toLocaleString()
-            };
-            wantList.unshift(newWant);
-            localStorage.setItem('cangjingge_want', JSON.stringify(wantList));
-            alert('需求发布成功！');
-            // 清空表单
-            document.getElementById('want-title').value = '';
-            document.getElementById('want-info').value = '';
-            document.getElementById('want-user').value = userInfo.name;
-            renderAll();
-        }
-
-        // 收藏功能
-        function collectContent(id) {
-            let isCollected = collectList.some(item => item.id === id);
-            if (isCollected) {
-                collectList = collectList.filter(item => item.id !== id);
-                alert('取消收藏！');
-            } else {
-                let content = contentList.find(item => item.id === id);
-                if (content) {
-                    collectList.push(content);
-                    alert('收藏成功！');
-                }
-            }
-            localStorage.setItem('cangjingge_collect', JSON.stringify(collectList));
-            renderAll();
-        }
-
-        // 我想要
-        function wantContent(id) {
-            let content = contentList.find(item => item.id === id);
-            if (content) {
-                alert(`我想要！\n标题：${content.title}\n发布人：${content.user}\n方式：${content.wayText}\n请联系发布人对接！`);
-            }
-        }
-
-        // 搜索功能
-        function searchContent() {
-            let keyword = document.getElementById('search-input').value.toLowerCase();
-            let type = document.getElementById('search-type').value;
-            let price = document.getElementById('search-price').value;
-
-            let filterList = contentList.filter(item => {
-                // 关键词筛选
-                let hasKeyword = item.title.toLowerCase().includes(keyword) || item.info.toLowerCase().includes(keyword);
-                // 类型筛选
-                let hasType = type === 'all' || item.type === type;
-                // 价格筛选
-                let hasPrice = true;
-                if (price === 'free') hasPrice = item.price === 0;
-                if (price === 'low') hasPrice = item.price > 0 && item.price <= 50;
-                if (price === 'high') hasPrice = item.price > 50;
-
-                return hasKeyword && hasType && hasPrice;
-            });
-
-            // 渲染搜索结果到首页
-            document.getElementById('index-list').innerHTML = renderCard(filterList);
-            // 切换到首页
-            openTab('index');
-        }
-
-        // 渲染卡片
-        function renderCard(list) {
-            if (list.length === 0) {
-                return `<div style="text-align: center; color: #6d4c2b; padding: 50px 0;">暂无内容，快来发布吧！</div>`;
-            }
-            return list.map(item => `
-                <div class="card">
-                    <div class="title">${item.title}</div>
-                    <div class="info">${item.typeText}</div>
-                    <div class="info">${item.info}</div>
-                    <div class="info">发布人：${item.user}</div>
-                    <div class="info">发布时间：${item.time}</div>
-                    <div class="info">获取方式：${item.wayText}</div>
-                    <div class="price">${item.priceText}</div>
-                    <div class="btn-group">
-                        <button class="card-btn btn-collect" onclick="collectContent(${item.id})">
-                            ${collectList.some(c => c.id === item.id) ? '取消收藏' : '收藏'}
-                        </button>
-                        <button class="card-btn btn-want" onclick="wantContent(${item.id})">我想要</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // 渲染求书卡片
-        function renderWantCard(list) {
-            if (list.length === 0) {
-                return `<div style="text-align: center; color: #6d4c2b; padding: 50px 0;">暂无求书需求，快来发布吧！</div>`;
-            }
-            return list.map(item => `
-                <div class="card">
-                    <div class="title">${item.title}</div>
-                    <div class="info">${item.typeText}</div>
-                    <div class="info">${item.info}</div>
-                    <div class="info">需求人：${item.user}</div>
-                    <div class="info">发布时间：${item.time}</div>
-                </div>
-            `).join('');
-        }
-
-        // 渲染所有数据
-        function renderAll() {
-            // 初始化发布人输入框为当前用户
-            document.getElementById('publish-user').value = userInfo.name;
-            document.getElementById('want-user').value = userInfo.name;
-            document.getElementById('user-name').value = userInfo.name;
-
-            // 学霸推荐（免费笔记）
-            let hotList = contentList.filter(item => item.isHot);
-            document.getElementById('hot-list').innerHTML = renderCard(hotList);
-
-            // 首页最新发布
-            document.getElementById('index-list').innerHTML = renderCard(contentList);
-
-            // 二手教材
-            let bookList = contentList.filter(item => item.type === 'book');
-            document.getElementById('book-list').innerHTML = renderCard(bookList);
-
-            // 学霸笔记
-            let noteList = contentList.filter(item => item.type === 'note');
-            document.getElementById('note-list').innerHTML = renderCard(noteList);
-
-            // 求书墙
-            document.getElementById('want-list').innerHTML = renderWantCard(wantList);
-
-            // 个人中心-我的发布
-            let myPublish = contentList.filter(item => item.user === userInfo.name);
-            document.getElementById('my-publish').innerHTML = renderCard(myPublish);
-
-            // 个人中心-我的收藏
-            document.getElementById('my-collect').innerHTML = renderCard(collectList);
-        }
-
-        // 页面加载时渲染
-        window.onload = function() {
-            renderAll();
-        };
-    </script>
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const name = 'Kira(**伦)';
+    try {
+      await navigator.clipboard.writeText(name);
+      toast('已复制收款人：' + name);
+    } catch {
+      toast('收款人：' + name);
+    }
+  });
+</script>
 </body>
 </html>
